@@ -42,6 +42,45 @@ pub struct PreparedWork {
     pub dependency_snapshot: Vec<Value>,
 }
 
+fn branch_slug(text: &str) -> String {
+    let words = text.replace(|character: char| !character.is_alphanumeric(), " ");
+    let slug = deunicode::deunicode(&words)
+        .split(|character: char| !character.is_ascii_alphanumeric())
+        .filter(|word| !word.is_empty())
+        .collect::<Vec<_>>()
+        .join("-")
+        .to_ascii_lowercase();
+    slug[..slug.len().min(80)].trim_end_matches('-').to_owned()
+}
+
+fn issue_branch(number: u64, title: &str, metadata: &Value, generation: u64) -> Result<String> {
+    let mut slug = branch_slug(title);
+    if slug.is_empty() {
+        slug = metadata["acceptance_criteria"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .filter_map(|criterion| criterion["text"].as_str())
+            .map(|text| {
+                let sanitized = crate::collector::sanitize(text, "system");
+                branch_slug(sanitized["text"].as_str().unwrap_or_default())
+            })
+            .find(|slug| !slug.is_empty())
+            .ok_or_else(|| {
+                Error::new(
+                    "invalid_metadata",
+                    "Issue needs a descriptive title or acceptance criterion to name its branch",
+                )
+            })?;
+    }
+    let mut branch = format!("devmesh/issue-{number}/{slug}");
+    if generation > 1 {
+        // Normalized titles contain only single dashes between words.
+        branch.push_str(&format!("--attempt-{generation}"));
+    }
+    Ok(branch)
+}
+
 impl Worker {
     pub async fn prepare(&self, number: u64, ctx: &ClaimContext) -> Result<PreparedWork> {
         crate::workspace::ensure_repository_with_client(
@@ -102,11 +141,20 @@ impl Worker {
             &dependency_snapshot,
             self.service.repo.repository_id,
         )?;
+        let issue_title =
+            &crate::collector::sanitize(issue["title"].as_str().unwrap_or_default(), "system")
+                ["text"];
+        let branch = issue_branch(
+            number,
+            issue_title.as_str().unwrap_or_default(),
+            &metadata,
+            claim["generation"].as_u64().unwrap_or(1),
+        )?;
         let workspace = Workspace::create_with_client(
             &self.project.path,
             &self.project.remote,
             revision.as_deref().unwrap_or(&self.project.branch),
-            number,
+            &branch,
             claim["claim_id"].as_str().unwrap().parse().unwrap(),
             &self.project.worktrees,
             Some(&self.service.client),
@@ -122,7 +170,7 @@ impl Worker {
             metadata,
             issue_source: json!({
                 "repository_name": format!("{}/{}", self.service.repo.owner, self.service.repo.name),
-                "issue_title": crate::collector::sanitize(issue["title"].as_str().unwrap_or(""), "system")["text"],
+                "issue_title": issue_title,
                 "issue_url": issue["html_url"].as_str().unwrap_or("")
             }),
             dependency_snapshot,

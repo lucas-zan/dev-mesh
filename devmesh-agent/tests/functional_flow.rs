@@ -165,7 +165,7 @@ fn fixture(role: &str) -> Fixture {
     meta["required_role"] = json!(role);
     meta["dependencies"] = json!([]);
     meta["acceptance_criteria"] = json!([{"id":"AC1","text":"answer is 42"}]);
-    let issue = json!({"number":128,"content_version":1,"state":"open","body":replace_metadata("Implement answer",&meta).unwrap(),"assignees":[],"labels":[{"id":1,"name":"status:ready"},{"name":format!("role:{role}")},{"name":"agent:allowed"},{"name":format!("priority:{}",meta["priority"].as_str().unwrap())},{"name":format!("type:{}",meta["type"].as_str().unwrap())}]});
+    let issue = json!({"number":128,"title":"Set answer to 42","content_version":1,"state":"open","body":replace_metadata("Implement answer",&meta).unwrap(),"assignees":[],"labels":[{"id":1,"name":"status:ready"},{"name":format!("role:{role}")},{"name":"agent:allowed"},{"name":format!("priority:{}",meta["priority"].as_str().unwrap())},{"name":format!("type:{}",meta["type"].as_str().unwrap())}]});
     let state = Arc::new(Mutex::new(State {
         issue,
         issue_summary: None,
@@ -332,6 +332,7 @@ async fn finish(work: &ManagedWork) {
 async fn code_issue_runs_from_empty_checkout_through_tests_pr_merge_and_close() {
     let f = fixture("backend");
     let work = start(&f, true).await;
+    assert_eq!(work.prepared.branch, "devmesh/issue-128/set-answer-to-42");
     let test = test_evidence(&work).await;
     assert_eq!(test["outcome"], "pass");
     let candidate = work.call("work_push", &json!({})).await.unwrap()["sha"].clone();
@@ -372,6 +373,48 @@ async fn code_issue_runs_from_empty_checkout_through_tests_pr_merge_and_close() 
         vec![128]
     );
     assert_eq!(f.state.lock().unwrap().issue["state"], "closed");
+}
+
+#[tokio::test]
+async fn issue_branch_names_transliterate_the_chinese_title_and_separate_attempts() {
+    let f = fixture("backend");
+    f.state.lock().unwrap().issue["title"] = json!("修复登录 / Token 过期? [API]");
+    let first = f.worker.prepare(128, &f.ctx).await.unwrap();
+    assert_eq!(
+        first.branch,
+        "devmesh/issue-128/xiu-fu-deng-lu-token-guo-qi-api"
+    );
+    assert_eq!(
+        git(&first.workspace, &["branch", "--show-current"]).unwrap(),
+        first.branch
+    );
+    f.worker
+        .finalize(&first, WorkState::Blocked, "retry requested", true)
+        .await
+        .unwrap();
+    f.worker
+        .service
+        .prepare(128, "ready", "retry")
+        .await
+        .unwrap();
+    let second = f.worker.prepare(128, &f.ctx).await.unwrap();
+    assert_eq!(
+        second.branch,
+        "devmesh/issue-128/xiu-fu-deng-lu-token-guo-qi-api--attempt-2"
+    );
+    assert_ne!(second.workspace, first.workspace);
+    assert_eq!(
+        git(&first.workspace, &["branch", "--show-current"]).unwrap(),
+        first.branch
+    );
+}
+
+#[tokio::test]
+async fn issue_branch_uses_acceptance_text_if_title_has_no_words() {
+    let f = fixture("backend");
+    f.state.lock().unwrap().issue["title"] = json!("✨ … / @{} !!!");
+    let prepared = f.worker.prepare(128, &f.ctx).await.unwrap();
+    assert_eq!(prepared.branch, "devmesh/issue-128/answer-is-42");
 }
 
 #[tokio::test]

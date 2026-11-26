@@ -12,11 +12,13 @@ description: 在已配置 Gitea Token 的 DevMesh 环境中，以 backend、fron
 3. 用项目要求的测试证明验收项。缺依赖或无法执行时调用 `work_report_blocked`，附具体原因和依赖，不编造进度。
 4. 按[交付规则](references/delivery-policy.md)调用 `work_report_delivery` 上报真实证据。工具确认前不能将模型输出当交付成功；审核、合并和关闭按项目规则处理。
 
+每个获认领的 Issue 从目标基线创建独立分支和 Worktree。Worker 从实际 Issue 标题生成可读分支名，使用 ASCII 字母、数字和短横线。`Fix login token expiry` 对应 `devmesh/issue-128/fix-login-token-expiry`。中文标题转成拼音，`修复登录 Token 过期` 对应 `devmesh/issue-128/xiu-fu-deng-lu-token-guo-qi`。标题没有可用文字时取具体的验收项。再次认领时在分支名后加轮次，例如 `--attempt-2`。在 Worker 分配的分支上开发和交付，恢复时沿用该 Work 已保存的分支。
+
 执行中用可见进度消息说明当前目标、关键发现和下一步。开始一组检查或改动前说明用途，测试失败或方向变化时立即说明原因和调整。消息将同步到 Relay，供用户观察和通过当前任务指令纠正方向。
 
 用户明确要求周期检查、自动认领和开发时，按[Worker 自动执行](references/worker-automation.md)配置并启动本地轮询。在授权范围内依次认领、开分支、执行和交付，无需逐单确认。读取历史使用 Relay 授权的 Session 工具。启动和交付分别以 Worker 状态及实际证据确认。
 
-创建任务使用 `issue_create`。按[角色判定规则](references/issue-schema.md)从任务和验收项推断 `required_role`，用户明确指定处理角色时遵从。先查询已有任务，传稳定的 `dedup_key`。用 [requirement](templates/requirement.md)、[feature](templates/feature.md)、[bug](templates/bug.md)、[test](templates/test.md) 模板组织输入。未澄清或未获自动执行授权的需求留在 backlog；通过受控 `issue_prepare` 才能进入 ready。创建和远程发布以本次用户指令及项目已授予的协作权限为边界。
+创建任务使用 `issue_create`。标题写清要改的功能、对象或具体故障，例如 `修复登录 Token 过期`。按[角色判定规则](references/issue-schema.md)从任务和验收项推断 `required_role`，用户明确指定处理角色时遵从。先查询已有任务，传稳定的 `dedup_key`。用 [requirement](templates/requirement.md)、[feature](templates/feature.md)、[bug](templates/bug.md)、[test](templates/test.md) 模板组织输入。未澄清或未获自动执行授权的需求留在 backlog；通过受控 `issue_prepare` 才能进入 ready。创建和远程发布以本次用户指令及项目已授予的协作权限为边界。
 
 [Issue 合同](references/issue-schema.md)定义输入，[工作流](references/issue-workflow.md)定义状态，[协作边界](references/collaboration-protocol.md)定义调用归属。不要直接修改正文协议块、Claim、generation、机器状态标签或人工 assignees。Push/PR 必须经过受控交付入口，不从 shell 绕过。
 

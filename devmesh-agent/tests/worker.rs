@@ -56,7 +56,7 @@ fn worktree_keeps_dirty_main_directory_and_pins_base() {
     let work = Workspace::create_local(
         dir.path(),
         "HEAD",
-        128,
+        "devmesh/issue-128/update-file",
         Uuid::new_v4(),
         &dir.path().join("trees"),
     )

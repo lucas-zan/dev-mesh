@@ -24,6 +24,7 @@ async-trait.workspace = true
 
 regex.workspace = true
 chrono.workspace = true
+deunicode = "=1.6.2"
 
 [dev-dependencies]
 axum.workspace = true

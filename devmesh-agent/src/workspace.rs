@@ -46,7 +46,7 @@ impl Workspace {
     pub fn create_local(
         repo: &Path,
         base: &str,
-        number: u64,
+        work_branch: &str,
         claim: Uuid,
         root: &Path,
     ) -> Result<Self> {
@@ -54,7 +54,6 @@ impl Workspace {
             repo,
             &["rev-parse", "--verify", &format!("{base}^{{commit}}")],
         )?;
-        let branch = format!("devmesh/issue-{number}/{claim}");
         std::fs::create_dir_all(root).map_err(|e| Error::new("workspace_error", e.to_string()))?;
         let root = std::fs::canonicalize(root)
             .map_err(|e| Error::new("workspace_error", e.to_string()))?;
@@ -65,7 +64,7 @@ impl Workspace {
                 "worktree",
                 "add",
                 "-b",
-                &branch,
+                work_branch,
                 path.to_str()
                     .ok_or_else(|| Error::new("workspace_error", "Non UTF-8 path"))?,
                 &base_sha,
@@ -73,25 +72,25 @@ impl Workspace {
         )?;
         Ok(Self {
             path,
-            branch,
+            branch: work_branch.to_owned(),
             base_sha,
         })
     }
     pub fn create(
         repo: &Path,
         remote: &str,
-        branch: &str,
-        number: u64,
+        base: &str,
+        work_branch: &str,
         claim: Uuid,
         root: &Path,
     ) -> Result<Self> {
-        Self::create_with_client(repo, remote, branch, number, claim, root, None)
+        Self::create_with_client(repo, remote, base, work_branch, claim, root, None)
     }
     pub(crate) fn create_with_client(
         repo: &Path,
         remote: &str,
-        branch: &str,
-        number: u64,
+        base: &str,
+        work_branch: &str,
         claim: Uuid,
         root: &Path,
         client: Option<&GiteaClient>,
@@ -103,8 +102,8 @@ impl Workspace {
                 "Git origin does not match configured Gitea repository",
             ));
         }
-        git_remote(repo, &["fetch", "origin", branch], &actual, client)?;
-        Self::create_local(repo, "FETCH_HEAD", number, claim, root)
+        git_remote(repo, &["fetch", "origin", base], &actual, client)?;
+        Self::create_local(repo, "FETCH_HEAD", work_branch, claim, root)
     }
 }
 pub fn normalize_remote(remote: &str) -> String {
