@@ -1,0 +1,5 @@
+services:
+  devmesh-relay:
+    build:
+      context: ../..
+      dockerfile: devmesh-relay/deploy/Dockerfile

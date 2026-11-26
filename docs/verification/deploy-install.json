@@ -1,0 +1,34 @@
+{
+  "verified_at": "2026-11-26T02:06:34.689881+00:00",
+  "scope": "Deployment command orchestration, real Compose config validation, isolated offline installation and actual Codex CLI profile registration; excludes Docker service startup and online upstream installs",
+  "passed": true,
+  "checks": [
+    {
+      "command": "python3 scripts/test_deploy.py",
+      "result": "PASS",
+      "tests": 2
+    },
+    {
+      "command": "python3 scripts/test_local_install.py",
+      "result": "PASS",
+      "tests": 3
+    },
+    {
+      "command": "python3 scripts/test_release.py",
+      "result": "PASS",
+      "tests": 1
+    },
+    {
+      "command": "make install INSTALL_ARGS=--offline [isolated prefix/profile]",
+      "result": "PASS"
+    },
+    {
+      "command": "docker compose config --quiet [synthetic POSTGRES_PASSWORD]",
+      "result": "PASS"
+    },
+    {
+      "command": "make -C devmesh-relay -n",
+      "result": "PASS"
+    }
+  ]
+}

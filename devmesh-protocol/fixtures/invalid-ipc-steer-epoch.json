@@ -1,0 +1,12 @@
+{
+  "type": "request",
+  "request_id": "b13f49a6-e05f-5662-a8d7-3e36a9860057",
+  "method": "steer",
+  "work_id": "02f279e2-d72d-5c24-9340-dea8f3998532",
+  "session_id": "cb02434e-77f5-57f5-bc1b-5a7cd830e6db",
+  "expected_epoch": null,
+  "args": {
+    "command_id": "2a91c074-67a1-5f09-9603-b5622aa6a024",
+    "message": "保持接口兼容"
+  }
+}

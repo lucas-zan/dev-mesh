@@ -1,0 +1,34 @@
+{
+  "version": "1.1",
+  "type": "catalog.snapshot",
+  "frame_id": "69162959-1279-5581-a6ba-156bf2bf1ef9",
+  "sent_at": "2026-11-25T11:31:00Z",
+  "payload": {
+    "project_id": "c7790278-b47d-5506-8ec7-4859744adaf9",
+    "epoch": "1",
+    "snapshot_id": "7686eab2-4562-57eb-aed7-3ffe784b21b1",
+    "snapshot_seq": "1",
+    "page_index": 0,
+    "is_last": true,
+    "scope": "all",
+    "items": [
+      {
+        "issue_ref": {
+          "instance_id": "b58f4390-be40-51f1-baa8-ea3245b19656",
+          "repository_id": 1024,
+          "issue_number": 128
+        },
+        "source_updated_at": "2026-11-25T11:31:00Z",
+        "content_version": "5",
+        "metadata_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "source_state": "open",
+        "canonical_state": "ready",
+        "role": "backend",
+        "assignees": [],
+        "title": "文件上传 API",
+        "url": "https://git.company.example/company/adi/issues/128",
+        "priority": "p1"
+      }
+    ]
+  }
+}

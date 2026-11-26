@@ -1,0 +1,36 @@
+{
+  "version": "1.1",
+  "type": "session.register",
+  "frame_id": "6356b1a1-b5f7-5498-92d5-99ac1f8a2c9d",
+  "sent_at": "2026-11-25T11:31:00Z",
+  "payload": {
+    "session_id": "cb02434e-77f5-57f5-bc1b-5a7cd830e6db",
+    "work_id": "02f279e2-d72d-5c24-9340-dea8f3998532",
+    "parent_session_id": null,
+    "runtime": "codex",
+    "runtime_version": "D0-fixture-only",
+    "adapter_version": "1.1.0",
+    "runtime_instance_id": "cbd9f19e-2c3a-52b3-bdfd-4d64fd26a0da",
+    "native_session_id": "native-thread-example",
+    "capabilities": {
+      "message_events": true,
+      "tool_events": true,
+      "steer": true,
+      "follow_up": true,
+      "prompt": true,
+      "interrupt": true,
+      "local_approval": true,
+      "local_input": true,
+      "resume": true,
+      "child_sessions": false
+    },
+    "remote_control": {
+      "enabled": true,
+      "allow_steer": true,
+      "allow_follow_up": true,
+      "allow_prompt": true,
+      "allow_interrupt": false
+    },
+    "state": "starting"
+  }
+}

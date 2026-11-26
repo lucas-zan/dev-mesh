@@ -1,0 +1,906 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.devmesh.invalid/1.1/issue.schema.json",
+  "$defs": {
+    "issue_ref": {
+      "type": "object",
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "repository_id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "issue_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "instance_id",
+        "repository_id",
+        "issue_number"
+      ],
+      "additionalProperties": false
+    },
+    "repo_ref": {
+      "type": "object",
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "repository_id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "instance_id",
+        "repository_id"
+      ],
+      "additionalProperties": false
+    },
+    "artifact_ref": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "git_file",
+            "release_asset"
+          ]
+        },
+        "repository": {
+          "$ref": "#/$defs/repo_ref"
+        },
+        "commit_sha": {
+          "type": "string",
+          "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "path": {
+          "type": "string"
+        },
+        "asset_id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "kind",
+        "repository",
+        "sha256"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "git_file"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "commit_sha",
+              "path"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "release_asset"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "asset_id"
+            ]
+          }
+        }
+      ]
+    },
+    "pr_ref": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "$ref": "#/$defs/repo_ref"
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "head_sha": {
+          "type": "string",
+          "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "target_branch": {
+          "type": "string"
+        },
+        "merge_sha": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "repository",
+        "number",
+        "head_sha",
+        "target_branch"
+      ],
+      "additionalProperties": false
+    },
+    "claim": {
+      "type": "object",
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "owner_gitea_user_id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "device_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "worker_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "execution_role": {
+          "enum": [
+            "backend",
+            "frontend",
+            "product",
+            "qa"
+          ]
+        },
+        "runtime": {
+          "enum": [
+            "codex",
+            "pi",
+            "pi-durable"
+          ]
+        },
+        "state": {
+          "enum": [
+            "active",
+            "released",
+            "revoked"
+          ]
+        },
+        "claimed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "released_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "release_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "claim_id",
+        "generation",
+        "owner_gitea_user_id",
+        "device_id",
+        "worker_id",
+        "execution_role",
+        "runtime",
+        "state",
+        "claimed_at",
+        "released_at",
+        "release_reason"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "active"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "released_at": {
+                "type": "null"
+              },
+              "release_reason": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "released_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "release_reason": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "dependency": {
+      "type": "object",
+      "properties": {
+        "dependency_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "producer_issue": {
+          "$ref": "#/$defs/issue_ref"
+        },
+        "condition": {
+          "enum": [
+            "issue_closed",
+            "pr_ready",
+            "pr_merged",
+            "artifact_ready"
+          ]
+        },
+        "artifact_key": {
+          "type": "string"
+        },
+        "pr_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "required_sha": {
+          "type": "string",
+          "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "artifact": {
+          "$ref": "#/$defs/artifact_ref"
+        }
+      },
+      "required": [
+        "dependency_id",
+        "producer_issue",
+        "condition"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "condition": {
+                "const": "artifact_ready"
+              }
+            }
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": [
+                  "artifact_key"
+                ]
+              },
+              {
+                "required": [
+                  "artifact"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "evidence_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "kind": {
+          "enum": [
+            "pr",
+            "artifact",
+            "test",
+            "acceptance",
+            "commit"
+          ]
+        },
+        "candidate_sha": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pr": {
+          "$ref": "#/$defs/pr_ref"
+        },
+        "artifact": {
+          "$ref": "#/$defs/artifact_ref"
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 16384
+        },
+        "environment": {
+          "type": "string"
+        },
+        "exit_code": {
+          "type": "integer"
+        },
+        "outcome": {
+          "enum": [
+            "pass",
+            "fail",
+            "skipped",
+            "unknown"
+          ]
+        },
+        "acceptance_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "artifact_key": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "evidence_id",
+        "kind",
+        "candidate_sha",
+        "summary",
+        "outcome",
+        "acceptance_ids"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "pr"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "pr"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "artifact"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "artifact"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "test"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "environment"
+            ]
+          }
+        }
+      ]
+    },
+    "delivery": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "claim_generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "candidate_sha": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "minItems": 1
+        },
+        "acceptance_results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "outcome": {
+                "enum": [
+                  "pass",
+                  "fail",
+                  "skipped"
+                ]
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "outcome",
+              "evidence_ids"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "reported_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "work_id",
+        "claim_generation",
+        "candidate_sha",
+        "evidence",
+        "acceptance_results",
+        "reported_at"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "task_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "issue_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/issue_ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "creator_gitea_user_id": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "creator_role": {
+      "enum": [
+        "backend",
+        "frontend",
+        "product",
+        "qa"
+      ]
+    },
+    "required_role": {
+      "enum": [
+        "backend",
+        "frontend",
+        "product",
+        "qa"
+      ]
+    },
+    "type": {
+      "enum": [
+        "requirement",
+        "feature",
+        "bug",
+        "test",
+        "improvement"
+      ]
+    },
+    "priority": {
+      "enum": [
+        "p0",
+        "p1",
+        "p2",
+        "p3"
+      ]
+    },
+    "automation_allowed": {
+      "type": "boolean"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 16384
+          }
+        },
+        "required": [
+          "id",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "dedup_key": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "parent_issue": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/issue_ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "related_issues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/issue_ref"
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dependency"
+      }
+    },
+    "state": {
+      "enum": [
+        "backlog",
+        "ready",
+        "claimed",
+        "running",
+        "review",
+        "blocked",
+        "rework",
+        "done"
+      ]
+    },
+    "state_rev": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "claim_generation": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "claim": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/claim"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "delivery": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/delivery"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "blocked_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "rework_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "task_id",
+    "issue_ref",
+    "creator_gitea_user_id",
+    "creator_role",
+    "required_role",
+    "type",
+    "priority",
+    "automation_allowed",
+    "acceptance_criteria",
+    "dedup_key",
+    "parent_issue",
+    "related_issues",
+    "dependencies",
+    "state",
+    "state_rev",
+    "claim_generation",
+    "claim",
+    "delivery",
+    "blocked_reason",
+    "rework_reason"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "ready",
+              "claimed",
+              "running",
+              "review",
+              "rework",
+              "done"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "issue_ref": {
+            "$ref": "#/$defs/issue_ref"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "claimed",
+              "running"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "claim": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/claim"
+              },
+              {
+                "properties": {
+                  "state": {
+                    "const": "active"
+                  }
+                }
+              }
+            ]
+          },
+          "claim_generation": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "claim": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/claim"
+                  },
+                  {
+                    "properties": {
+                      "state": {
+                        "enum": [
+                          "released",
+                          "revoked"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "ready"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "automation_allowed": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "blocked_reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "review"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "delivery": {
+            "$ref": "#/$defs/delivery"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "ready",
+              "claimed",
+              "running",
+              "review",
+              "rework",
+              "done"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "acceptance_criteria": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "done"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "delivery": {
+            "$ref": "#/$defs/delivery"
+          }
+        }
+      }
+    }
+  ]
+}

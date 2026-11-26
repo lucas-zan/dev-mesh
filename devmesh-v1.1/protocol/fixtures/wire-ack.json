@@ -1,0 +1,11 @@
+{
+  "version": "1.1",
+  "type": "events.ack",
+  "frame_id": "cfaa53c7-9362-51fb-9b1a-e16437928b8d",
+  "sent_at": "2026-11-25T11:31:00Z",
+  "payload": {
+    "session_id": "cb02434e-77f5-57f5-bc1b-5a7cd830e6db",
+    "acked_sequence": "1",
+    "missing_sequences": []
+  }
+}

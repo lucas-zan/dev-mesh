@@ -1,0 +1,1 @@
+{"extends":"./tsconfig.json","compilerOptions":{"module":"NodeNext","moduleResolution":"NodeNext","outDir":".test-build","rootDir":"src"},"exclude":["src/main.tsx"]}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.1",
+  "task_id": "f70a2c8d-bb34-5cc2-919b-6444e6ddee4b",
+  "issue_ref": {
+    "instance_id": "b58f4390-be40-51f1-baa8-ea3245b19656",
+    "repository_id": 1024,
+    "issue_number": 128
+  },
+  "creator_gitea_user_id": 12,
+  "creator_role": "product",
+  "required_role": "backend",
+  "type": "feature",
+  "priority": "p1",
+  "automation_allowed": true,
+  "acceptance_criteria": [
+    {
+      "id": "AC-01",
+      "text": "文件上传成功"
+    },
+    {
+      "id": "AC-02",
+      "text": "未授权访问被拒绝"
+    }
+  ],
+  "dedup_key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "parent_issue": null,
+  "related_issues": [],
+  "dependencies": [],
+  "state": "ready",
+  "state_rev": 1,
+  "claim_generation": 0,
+  "claim": null,
+  "delivery": null,
+  "blocked_reason": null,
+  "rework_reason": null
+}

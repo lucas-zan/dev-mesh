@@ -1,0 +1,695 @@
+[
+  {
+    "name": "repository_list",
+    "description": "List all repositories visible to the configured Gitea Token; no manual enrollment required",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "project_list",
+    "description": "DevMesh controlled project_list; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "issue_list",
+    "description": "DevMesh controlled issue_list; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "repository_id": {
+          "type": "integer"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "issue_get",
+    "description": "DevMesh controlled issue_get; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "issue_ref": {
+          "type": "object",
+          "properties": {
+            "instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "repository_id": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issue_number": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "instance_id",
+            "repository_id",
+            "issue_number"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "issue_ref"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "issue_create",
+    "description": "DevMesh controlled issue_create; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "repository_id": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "required_role": {
+          "enum": [
+            "backend",
+            "frontend",
+            "product",
+            "qa"
+          ]
+        },
+        "type": {
+          "enum": [
+            "requirement",
+            "feature",
+            "bug",
+            "test",
+            "improvement"
+          ]
+        },
+        "priority": {
+          "enum": [
+            "p0",
+            "p1",
+            "p2",
+            "p3"
+          ]
+        },
+        "automation_requested": {
+          "type": "boolean"
+        },
+        "acceptance_criteria": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "text"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "parent_issue": {
+          "type": "object",
+          "properties": {
+            "instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "repository_id": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issue_number": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "instance_id",
+            "repository_id",
+            "issue_number"
+          ],
+          "additionalProperties": false
+        },
+        "dedup_key": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "required_role",
+        "type",
+        "priority",
+        "acceptance_criteria",
+        "dedup_key"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "issue_claim",
+    "description": "DevMesh controlled issue_claim; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "issue_ref": {
+          "type": "object",
+          "properties": {
+            "instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "repository_id": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issue_number": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "instance_id",
+            "repository_id",
+            "issue_number"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "issue_ref"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "issue_comment",
+    "description": "DevMesh controlled issue_comment; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "issue_ref": {
+          "type": "object",
+          "properties": {
+            "instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "repository_id": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issue_number": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "instance_id",
+            "repository_id",
+            "issue_number"
+          ],
+          "additionalProperties": false
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "work_start",
+    "description": "DevMesh controlled work_start; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "repository_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "issue_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "issue_ref": {
+          "type": "object"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "work_status",
+    "description": "DevMesh controlled work_status; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "work_push",
+    "description": "DevMesh controlled work_push; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "work_run_test",
+    "description": "DevMesh controlled work_run_test; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "acceptance_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "index"
+          ]
+        },
+        {
+          "required": [
+            "command"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "work_report_delivery",
+    "description": "DevMesh controlled work_report_delivery; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "candidate_sha": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "acceptance_results": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": [
+        "evidence",
+        "acceptance_results"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "work_create_pr",
+    "description": "DevMesh controlled work_create_pr; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "target_branch": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "body"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "session_list",
+    "description": "DevMesh controlled session_list; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "issue_ref": {
+          "type": "object",
+          "properties": {
+            "instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "repository_id": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issue_number": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "instance_id",
+            "repository_id",
+            "issue_number"
+          ],
+          "additionalProperties": false
+        },
+        "cursor": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "session_get",
+    "description": "DevMesh controlled session_get; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "session_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "session_events",
+    "description": "DevMesh controlled session_events; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "after_sequence": {
+          "type": "string"
+        },
+        "cursor": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        }
+      },
+      "required": [
+        "session_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "issue_prepare",
+    "description": "DevMesh controlled issue_prepare; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "issue_ref": {
+          "type": "object",
+          "properties": {
+            "instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "repository_id": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issue_number": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "instance_id",
+            "repository_id",
+            "issue_number"
+          ],
+          "additionalProperties": false
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "issue_ref"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "issue_unblock",
+    "description": "DevMesh controlled issue_unblock; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "issue_ref": {
+          "type": "object",
+          "properties": {
+            "instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "repository_id": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issue_number": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "instance_id",
+            "repository_id",
+            "issue_number"
+          ],
+          "additionalProperties": false
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "issue_ref"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "issue_request_rework",
+    "description": "DevMesh controlled issue_request_rework; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "issue_ref": {
+          "type": "object",
+          "properties": {
+            "instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "repository_id": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issue_number": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "instance_id",
+            "repository_id",
+            "issue_number"
+          ],
+          "additionalProperties": false
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "issue_ref"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "issue_release",
+    "description": "DevMesh controlled issue_release; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "work_finish",
+    "description": "DevMesh controlled work_finish; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "work_report_blocked",
+    "description": "DevMesh controlled work_report_blocked; identity and Work are launcher-owned",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "additionalProperties": false
+    }
+  }
+]

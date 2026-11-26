@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.1",
+  "task_id": "f70a2c8d-bb34-5cc2-919b-6444e6ddee4b",
+  "issue_ref": {
+    "instance_id": "b58f4390-be40-51f1-baa8-ea3245b19656",
+    "repository_id": 1024,
+    "issue_number": 128
+  },
+  "creator_gitea_user_id": 12,
+  "creator_role": "product",
+  "required_role": "backend",
+  "type": "feature",
+  "priority": "p1",
+  "automation_allowed": true,
+  "acceptance_criteria": [
+    {
+      "id": "AC-01",
+      "text": "文件上传成功"
+    },
+    {
+      "id": "AC-02",
+      "text": "未授权访问被拒绝"
+    }
+  ],
+  "dedup_key": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "parent_issue": null,
+  "related_issues": [],
+  "dependencies": [],
+  "state": "ready",
+  "state_rev": 5,
+  "claim_generation": 1,
+  "claim": {
+    "claim_id": "d0c92e24-98bb-59ac-b1f7-4670fc260d1f",
+    "generation": 1,
+    "owner_gitea_user_id": 14,
+    "device_id": "484adb25-9d88-5bb1-b1c5-d0000e23b871",
+    "worker_id": "0e414a51-b777-50f9-ac19-26f17b300ecf",
+    "execution_role": "backend",
+    "runtime": "codex",
+    "state": "released",
+    "claimed_at": "2026-11-25T11:31:00Z",
+    "released_at": "2026-11-25T11:31:30Z",
+    "release_reason": "runtime_failed"
+  },
+  "delivery": null,
+  "blocked_reason": null,
+  "rework_reason": "AC-02 requires revalidation"
+}

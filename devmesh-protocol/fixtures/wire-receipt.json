@@ -1,0 +1,15 @@
+{
+  "version": "1.1",
+  "type": "command.receipt",
+  "frame_id": "b10ed57c-ba95-510d-b7fd-b8f10a887125",
+  "sent_at": "2026-11-25T11:31:00Z",
+  "payload": {
+    "command_id": "2a91c074-67a1-5f09-9603-b5622aa6a024",
+    "receipt_seq": "1",
+    "state": "accepted",
+    "disposition": "queued",
+    "reason_code": null,
+    "evidence_ref": null,
+    "at": "2026-11-25T11:31:00Z"
+  }
+}

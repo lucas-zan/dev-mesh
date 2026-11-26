@@ -1,0 +1,638 @@
+{
+  "schema_version": 5,
+  "plan_id": "DM-001",
+  "project_root": "../../..",
+  "source_plan": "docs/implementation-plan.md",
+  "traceability": "traceability.json",
+  "work_packages": [
+    "DM-01",
+    "DM-02",
+    "DM-03",
+    "DM-04",
+    "DM-05",
+    "DM-06",
+    "DM-07",
+    "DM-08",
+    "DM-09",
+    "DM-10",
+    "DM-11",
+    "DM-12"
+  ],
+  "nodes": [
+    {
+      "id": "DM-01",
+      "title": "本地协作 Skill",
+      "work_packages": [
+        "DM-01"
+      ],
+      "source_sections": [
+        "### DM-01 本地协作 Skill"
+      ],
+      "todo": "DM-01-skill.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "READY",
+      "status": "验证成功",
+      "depends_on": [],
+      "blockers": [],
+      "consumes": [],
+      "produces": [
+        {
+          "id": "artifact:skill",
+          "kind": "package",
+          "description": "本地协作 Skill",
+          "locator": "devmesh-agent/skills/devmesh/SKILL.md"
+        }
+      ],
+      "integration_gates": [
+        "python3 scripts/test_skill.py"
+      ],
+      "evidence": [
+        {
+          "command": "python3 scripts/test_skill.py",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:18:55.352800+00:00"
+        },
+        {
+          "command": "python3 scripts/test_skill.py",
+          "result": "PASS",
+          "scope": "local; targeted incremental repair, not full node acceptance",
+          "verified_at": "2026-11-26T01:23:08.994369+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-02",
+      "title": "公共协议与领域类型",
+      "work_packages": [
+        "DM-02"
+      ],
+      "source_sections": [
+        "### DM-02 公共协议与领域类型"
+      ],
+      "todo": "DM-02-protocol.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "READY",
+      "status": "待测试验证",
+      "depends_on": [
+        "DM-01"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:skill"
+      ],
+      "produces": [
+        {
+          "id": "artifact:protocol",
+          "kind": "package",
+          "description": "公共协议与领域类型",
+          "locator": "devmesh-protocol"
+        }
+      ],
+      "integration_gates": [
+        "cargo test -p devmesh-protocol"
+      ],
+      "evidence": [
+        {
+          "command": "cargo test -p devmesh-protocol",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:23:11.537458+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-03",
+      "title": "Gitea 受控本地 MCP",
+      "work_packages": [
+        "DM-03"
+      ],
+      "source_sections": [
+        "### DM-03 Gitea 受控本地 MCP"
+      ],
+      "todo": "DM-03-gitea.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "BLOCKED",
+      "status": "待执行",
+      "depends_on": [
+        "DM-02"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:protocol"
+      ],
+      "produces": [
+        {
+          "id": "artifact:gitea",
+          "kind": "package",
+          "description": "Gitea 受控本地 MCP",
+          "locator": "devmesh-agent/src/gitea"
+        }
+      ],
+      "integration_gates": [
+        "cargo test -p devmesh-agent --test gitea",
+        "cargo test -p devmesh-agent --test mcp"
+      ],
+      "evidence": [
+        {
+          "command": "cargo test -p devmesh-agent --test gitea",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:28:56.755367+00:00"
+        },
+        {
+          "command": "cargo test -p devmesh-agent --test mcp",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:28:56.755367+00:00"
+        },
+        {
+          "command": "cargo test --workspace --offline",
+          "result": "PASS",
+          "scope": "local; targeted incremental repair, not full node acceptance",
+          "verified_at": "2026-11-26T01:23:08.994369+00:00"
+        },
+        {
+          "command": "python3 scripts/verify.py",
+          "result": "PASS",
+          "scope": "phase1 local functional scope; excludes real Gitea/model/network/PostgreSQL/browser",
+          "verified_at": "2026-11-26T01:44:54.719948+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-04",
+      "title": "本地 Worker、Worktree 与 Bridge",
+      "work_packages": [
+        "DM-04"
+      ],
+      "source_sections": [
+        "### DM-04 本地 Worker、Worktree 与 Bridge"
+      ],
+      "todo": "DM-04-worker.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "BLOCKED",
+      "status": "待执行",
+      "depends_on": [
+        "DM-03"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:gitea"
+      ],
+      "produces": [
+        {
+          "id": "artifact:worker",
+          "kind": "package",
+          "description": "本地 Worker、Worktree 与 Bridge",
+          "locator": "devmesh-agent/src"
+        }
+      ],
+      "integration_gates": [
+        "cargo test -p devmesh-agent --test worker",
+        "cargo test -p devmesh-agent --test bridge",
+        "cargo test -p devmesh-agent --test delivery"
+      ],
+      "evidence": [
+        {
+          "command": "cargo test -p devmesh-agent --test worker",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:34:00.550093+00:00"
+        },
+        {
+          "command": "cargo test -p devmesh-agent --test bridge",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:34:00.550093+00:00"
+        },
+        {
+          "command": "cargo test -p devmesh-agent --test delivery",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:34:00.550093+00:00"
+        },
+        {
+          "command": "cargo test --workspace --offline",
+          "result": "PASS",
+          "scope": "local; targeted incremental repair, not full node acceptance",
+          "verified_at": "2026-11-26T01:23:08.994369+00:00"
+        },
+        {
+          "command": "python3 scripts/verify.py",
+          "result": "PASS",
+          "scope": "phase1 local functional scope; excludes real Gitea/model/network/PostgreSQL/browser",
+          "verified_at": "2026-11-26T01:44:54.719948+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-05",
+      "title": "Codex 原生适配",
+      "work_packages": [
+        "DM-05"
+      ],
+      "source_sections": [
+        "### DM-05 Codex 原生适配"
+      ],
+      "todo": "DM-05-codex.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "BLOCKED",
+      "status": "待执行",
+      "depends_on": [
+        "DM-04"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:worker"
+      ],
+      "produces": [
+        {
+          "id": "artifact:codex",
+          "kind": "package",
+          "description": "Codex 原生适配",
+          "locator": "devmesh-agent/src/runtime/codex.rs"
+        }
+      ],
+      "integration_gates": [
+        "cargo test -p devmesh-agent --test codex"
+      ],
+      "evidence": [
+        {
+          "command": "cargo test -p devmesh-agent --test codex",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:43:01.792923+00:00"
+        },
+        {
+          "command": "cargo test --workspace --offline",
+          "result": "PASS",
+          "scope": "local; targeted incremental repair, not full node acceptance",
+          "verified_at": "2026-11-26T01:23:08.994369+00:00"
+        },
+        {
+          "command": "python3 scripts/verify.py",
+          "result": "PASS",
+          "scope": "phase1 local functional scope; excludes real Gitea/model/network/PostgreSQL/browser",
+          "verified_at": "2026-11-26T01:44:54.719948+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-06",
+      "title": "Pi 原生适配",
+      "work_packages": [
+        "DM-06"
+      ],
+      "source_sections": [
+        "### DM-06 Pi 原生适配"
+      ],
+      "todo": "DM-06-pi.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "BLOCKED",
+      "status": "待执行",
+      "depends_on": [
+        "DM-04"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:worker"
+      ],
+      "produces": [
+        {
+          "id": "artifact:pi",
+          "kind": "package",
+          "description": "Pi 原生适配",
+          "locator": "devmesh-agent/packages/pi-extension"
+        }
+      ],
+      "integration_gates": [
+        "cargo test -p devmesh-agent --test pi"
+      ],
+      "evidence": [
+        {
+          "command": "cargo test -p devmesh-agent --test pi",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:43:01.823201+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-07",
+      "title": "Pi Durable 标准 Host",
+      "work_packages": [
+        "DM-07"
+      ],
+      "source_sections": [
+        "### DM-07 Pi Durable 标准 Host"
+      ],
+      "todo": "DM-07-durable.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "BLOCKED",
+      "status": "待执行",
+      "depends_on": [
+        "DM-04"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:worker"
+      ],
+      "produces": [
+        {
+          "id": "artifact:durable",
+          "kind": "package",
+          "description": "Pi Durable 标准 Host",
+          "locator": "devmesh-agent/packages/pi-durable-host"
+        }
+      ],
+      "integration_gates": [
+        "npm test --workspace @devmesh/pi-durable-host"
+      ],
+      "evidence": [
+        {
+          "command": "npm test --workspace @devmesh/pi-durable-host",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:43:01.852346+00:00"
+        },
+        {
+          "command": "npm test --workspace @devmesh/pi-durable-host",
+          "result": "PASS",
+          "scope": "local; targeted incremental repair, not full node acceptance",
+          "verified_at": "2026-11-26T01:23:08.994369+00:00"
+        },
+        {
+          "command": "cargo test --workspace --offline",
+          "result": "PASS",
+          "scope": "local; targeted incremental repair, not full node acceptance",
+          "verified_at": "2026-11-26T01:23:08.994369+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-08",
+      "title": "三 Runtime 一键安装与 CLI",
+      "work_packages": [
+        "DM-08"
+      ],
+      "source_sections": [
+        "### DM-08 三 Runtime 一键安装与 CLI"
+      ],
+      "todo": "DM-08-installer.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "BLOCKED",
+      "status": "待执行",
+      "depends_on": [
+        "DM-05",
+        "DM-06",
+        "DM-07"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:codex",
+        "artifact:pi",
+        "artifact:durable"
+      ],
+      "produces": [
+        {
+          "id": "artifact:installer",
+          "kind": "package",
+          "description": "三 Runtime 一键安装与 CLI",
+          "locator": "devmesh-agent/src/installer.rs"
+        }
+      ],
+      "integration_gates": [
+        "cargo test -p devmesh-agent --test installer"
+      ],
+      "evidence": [
+        {
+          "command": "cargo test -p devmesh-agent --test installer",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T12:51:57.030993+00:00"
+        },
+        {
+          "command": "python3 scripts/verify.py",
+          "result": "PASS",
+          "scope": "phase1 local functional scope; excludes real Gitea/model/network/PostgreSQL/browser",
+          "verified_at": "2026-11-26T01:44:54.719948+00:00"
+        },
+        {
+          "command": "python3 scripts/test_deploy.py; python3 scripts/test_local_install.py; python3 scripts/test_release.py",
+          "result": "PASS",
+          "scope": "local deployment orchestration and isolated offline installation; no live Docker/upstream claim",
+          "verified_at": "2026-11-26T02:07:14.233048+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-09",
+      "title": "Relay 持久服务与 API",
+      "work_packages": [
+        "DM-09"
+      ],
+      "source_sections": [
+        "### DM-09 Relay 持久服务与 API"
+      ],
+      "todo": "DM-09-relay.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "BLOCKED",
+      "status": "待执行",
+      "depends_on": [
+        "DM-08"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:installer"
+      ],
+      "produces": [
+        {
+          "id": "artifact:relay",
+          "kind": "package",
+          "description": "Relay 持久服务与 API",
+          "locator": "devmesh-relay"
+        }
+      ],
+      "integration_gates": [
+        "cargo test -p devmesh-relay"
+      ],
+      "evidence": [
+        {
+          "command": "cargo test -p devmesh-relay",
+          "result": "PASS",
+          "scope": "local",
+          "verified_at": "2026-11-25T13:15:02.797783+00:00"
+        },
+        {
+          "command": "cargo test --workspace --offline",
+          "result": "PASS",
+          "scope": "local; targeted incremental repair, not full node acceptance",
+          "verified_at": "2026-11-26T01:23:08.994369+00:00"
+        },
+        {
+          "command": "python3 scripts/verify.py",
+          "result": "PASS",
+          "scope": "phase1 local functional scope; excludes real Gitea/model/network/PostgreSQL/browser",
+          "verified_at": "2026-11-26T01:44:54.719948+00:00"
+        },
+        {
+          "command": "python3 scripts/test_deploy.py; python3 scripts/test_local_install.py; python3 scripts/test_release.py",
+          "result": "PASS",
+          "scope": "local deployment orchestration and isolated offline installation; no live Docker/upstream claim",
+          "verified_at": "2026-11-26T02:07:14.233048+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-10",
+      "title": "Web 工作台",
+      "work_packages": [
+        "DM-10"
+      ],
+      "source_sections": [
+        "### DM-10 Web 工作台"
+      ],
+      "todo": "DM-10-web.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "BLOCKED",
+      "status": "待执行",
+      "depends_on": [
+        "DM-09"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:relay"
+      ],
+      "produces": [
+        {
+          "id": "artifact:web",
+          "kind": "package",
+          "description": "Web 工作台",
+          "locator": "devmesh-relay/web"
+        }
+      ],
+      "integration_gates": [
+        "npm test --workspace @devmesh/web"
+      ],
+      "evidence": [
+        {
+          "command": "npm test --workspace @devmesh/web",
+          "result": "PASS",
+          "scope": "local; targeted incremental repair, not full node acceptance",
+          "verified_at": "2026-11-26T01:23:08.994369+00:00"
+        },
+        {
+          "command": "npm run build --workspace @devmesh/web",
+          "result": "PASS",
+          "scope": "local; targeted incremental repair, not full node acceptance",
+          "verified_at": "2026-11-26T01:23:08.994369+00:00"
+        },
+        {
+          "command": "python3 scripts/verify.py",
+          "result": "PASS",
+          "scope": "phase1 local functional scope; excludes real Gitea/model/network/PostgreSQL/browser",
+          "verified_at": "2026-11-26T01:44:54.719948+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-11",
+      "title": "跨项目离线集成与发布制品",
+      "work_packages": [
+        "DM-11"
+      ],
+      "source_sections": [
+        "### DM-11 跨项目离线集成与发布制品"
+      ],
+      "todo": "DM-11-integration.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "BLOCKED",
+      "status": "待执行",
+      "depends_on": [
+        "DM-10"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:web"
+      ],
+      "produces": [
+        {
+          "id": "artifact:integration",
+          "kind": "package",
+          "description": "跨项目离线集成与发布制品",
+          "locator": "scripts"
+        }
+      ],
+      "integration_gates": [
+        "python3 scripts/test_e2e.py",
+        "python3 scripts/verify.py"
+      ],
+      "evidence": [
+        {
+          "command": "python3 scripts/verify.py",
+          "result": "PASS",
+          "scope": "local; targeted incremental repair, not full node acceptance",
+          "verified_at": "2026-11-26T01:23:08.994369+00:00"
+        },
+        {
+          "command": "python3 scripts/verify.py",
+          "result": "PASS",
+          "scope": "phase1 local functional scope; excludes real Gitea/model/network/PostgreSQL/browser",
+          "verified_at": "2026-11-26T01:44:54.719948+00:00"
+        },
+        {
+          "command": "python3 scripts/test_deploy.py; python3 scripts/test_local_install.py; python3 scripts/test_release.py",
+          "result": "PASS",
+          "scope": "local deployment orchestration and isolated offline installation; no live Docker/upstream claim",
+          "verified_at": "2026-11-26T02:07:14.233048+00:00"
+        }
+      ]
+    },
+    {
+      "id": "DM-12",
+      "title": "最终真实凭据与上游验收",
+      "work_packages": [
+        "DM-12"
+      ],
+      "source_sections": [
+        "### DM-12 最终真实凭据与上游验收"
+      ],
+      "todo": "DM-12-live.md",
+      "maturity": "DECOMPOSED",
+      "elaboration_blockers": [],
+      "readiness": "BLOCKED",
+      "status": "待执行",
+      "depends_on": [
+        "DM-11"
+      ],
+      "blockers": [],
+      "consumes": [
+        "artifact:integration"
+      ],
+      "produces": [
+        {
+          "id": "artifact:live",
+          "kind": "package",
+          "description": "最终真实凭据与上游验收",
+          "locator": "docs/live-validation.md"
+        }
+      ],
+      "integration_gates": [
+        "python3 scripts/validate_live.py"
+      ],
+      "evidence": []
+    }
+  ]
+}

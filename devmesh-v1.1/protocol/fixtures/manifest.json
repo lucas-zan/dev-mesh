@@ -1,0 +1,89 @@
+{
+  "fixtures": [
+    {
+      "file": "issue-ready.json",
+      "schema": "issue.schema.json",
+      "valid": true
+    },
+    {
+      "file": "issue-claimed.json",
+      "schema": "issue.schema.json",
+      "valid": true
+    },
+    {
+      "file": "issue-blocked-released.json",
+      "schema": "issue.schema.json",
+      "valid": true
+    },
+    {
+      "file": "issue-ready-after-release.json",
+      "schema": "issue.schema.json",
+      "valid": true
+    },
+    {
+      "file": "wire-register.json",
+      "schema": "wire.schema.json",
+      "valid": true
+    },
+    {
+      "file": "wire-work.json",
+      "schema": "wire.schema.json",
+      "valid": true
+    },
+    {
+      "file": "wire-session.json",
+      "schema": "wire.schema.json",
+      "valid": true
+    },
+    {
+      "file": "wire-events.json",
+      "schema": "wire.schema.json",
+      "valid": true
+    },
+    {
+      "file": "wire-command.json",
+      "schema": "wire.schema.json",
+      "valid": true
+    },
+    {
+      "file": "wire-receipt.json",
+      "schema": "wire.schema.json",
+      "valid": true
+    },
+    {
+      "file": "wire-ack.json",
+      "schema": "wire.schema.json",
+      "valid": true
+    },
+    {
+      "file": "wire-catalog.json",
+      "schema": "wire.schema.json",
+      "valid": true
+    },
+    {
+      "file": "ipc-steer.json",
+      "schema": "ipc.schema.json",
+      "valid": true
+    },
+    {
+      "file": "invalid-claimed-no-claim.json",
+      "schema": "issue.schema.json",
+      "valid": false
+    },
+    {
+      "file": "invalid-steer-no-epoch.json",
+      "schema": "wire.schema.json",
+      "valid": false
+    },
+    {
+      "file": "invalid-message-raw-transcript.json",
+      "schema": "wire.schema.json",
+      "valid": false
+    },
+    {
+      "file": "invalid-ipc-steer-epoch.json",
+      "schema": "ipc.schema.json",
+      "valid": false
+    }
+  ]
+}

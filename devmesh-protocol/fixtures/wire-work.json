@@ -1,0 +1,20 @@
+{
+  "version": "1.1",
+  "type": "work.register",
+  "frame_id": "6f70f848-8489-508a-87fe-9b75d84861dd",
+  "sent_at": "2026-11-25T11:31:00Z",
+  "payload": {
+    "work_id": "02f279e2-d72d-5c24-9340-dea8f3998532",
+    "project_id": "c7790278-b47d-5506-8ec7-4859744adaf9",
+    "issue_ref": {
+      "instance_id": "b58f4390-be40-51f1-baa8-ea3245b19656",
+      "repository_id": 1024,
+      "issue_number": 128
+    },
+    "claim_id": "d0c92e24-98bb-59ac-b1f7-4670fc260d1f",
+    "claim_generation": 1,
+    "role": "backend",
+    "state": "preparing",
+    "started_at": "2026-11-25T11:31:00Z"
+  }
+}

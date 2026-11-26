@@ -1,0 +1,24 @@
+{
+  "name": "devmesh-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "devmesh-protocol",
+    "devmesh-agent/packages/*",
+    "devmesh-relay/web"
+  ],
+  "scripts": {
+    "test": "npm test --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@types/node": "https://registry.npmjs.org/@types/node/-/node-24.10.1.tgz",
+    "ajv": "https://registry.npmjs.org/ajv/-/ajv-8.20.0.tgz",
+    "ajv-formats": "https://registry.npmjs.org/ajv-formats/-/ajv-formats-3.0.1.tgz",
+    "typescript": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+    "prettier": "https://registry.npmjs.org/prettier/-/prettier-3.6.2.tgz"
+  },
+  "overrides": {
+    "fast-uri": "https://registry.npmjs.org/fast-uri/-/fast-uri-3.1.9.tgz"
+  }
+}

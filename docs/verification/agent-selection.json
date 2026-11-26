@@ -1,0 +1,19 @@
+{
+  "verified_at": "2026-11-26T03:12:03.268475+00:00",
+  "passed": true,
+  "scope": "Detection/selection, runtime reuse paths, actual cached Pi Durable Host hello, isolated release and Codex CLI registration; excludes network installation and actual model development",
+  "checks": {
+    "agent_selection_tests": 7,
+    "configuration_tests": 11,
+    "install_tests": 5,
+    "release_test": 1,
+    "rust_cli_selection_test": 1,
+    "clippy": "PASS",
+    "format": "PASS",
+    "python_compile": "PASS"
+  },
+  "limitations": [
+    "No actual upstream Agent downloads or model calls",
+    "No user profile or system credential writes"
+  ]
+}

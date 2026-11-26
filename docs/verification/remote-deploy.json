@@ -1,0 +1,16 @@
+{
+  "verified_at": "2026-11-26T02:35:39.406447+00:00",
+  "passed": true,
+  "scope": "Remote publishing command orchestration, real Compose configuration parsing, Make dry-run; excludes Docker daemon and live remote deployment",
+  "checks": [
+    "python3 scripts/test_deploy.py: 4 passed",
+    "python3 scripts/test_remote_deploy.py: 4 passed",
+    "Python py_compile: passed",
+    "Make local/default/root deploy dry-run: passed",
+    "Missing REMOTE_HOST: explicit failure before connection"
+  ],
+  "limitations": [
+    "No remote host provided; no actual SSH transfer or remote startup",
+    "Local Relay exit(1) awaits container logs"
+  ]
+}

@@ -1,0 +1,9 @@
+.cache
+.git
+**/node_modules
+target
+**/dist
+**/.test-build
+.env*
+**/*.db
+**/*.sqlite*

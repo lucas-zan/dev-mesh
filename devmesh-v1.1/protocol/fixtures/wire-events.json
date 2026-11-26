@@ -1,0 +1,32 @@
+{
+  "version": "1.1",
+  "type": "session.events",
+  "frame_id": "c39a4a39-5e87-55cb-b4f2-55bf78979db0",
+  "sent_at": "2026-11-25T11:31:00Z",
+  "payload": {
+    "session_id": "cb02434e-77f5-57f5-bc1b-5a7cd830e6db",
+    "events": [
+      {
+        "event_id": "da310f57-b088-5e3c-89fd-057c9de61106",
+        "work_id": "02f279e2-d72d-5c24-9340-dea8f3998532",
+        "session_id": "cb02434e-77f5-57f5-bc1b-5a7cd830e6db",
+        "sequence": "1",
+        "occurred_at": "2026-11-25T11:31:00Z",
+        "run_epoch": "1",
+        "type": "message.completed",
+        "payload": {
+          "message_id": "msg-1",
+          "author_kind": "agent",
+          "text": "已完成接口分析。[代码片段已省略]",
+          "content_policy": {
+            "policy_id": "issue-share-v1",
+            "redacted": true,
+            "truncated": false,
+            "omitted": true,
+            "original_bytes": 120
+          }
+        }
+      }
+    ]
+  }
+}

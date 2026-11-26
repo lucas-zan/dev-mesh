@@ -1,0 +1,15 @@
+{
+  "verified_at": "2026-11-26T02:50:00.229823+00:00",
+  "passed": true,
+  "scope": "Browser receiver regression simulated at fetch boundary; protocol and Web tests and production build; excludes live browser login",
+  "red": "Default RelayClient login threw TypeError: Illegal invocation with a receiver-checking fetch",
+  "tests": {
+    "protocol_schema": 18,
+    "protocol_client": 3,
+    "web": 11
+  },
+  "builds": [
+    "protocol typecheck PASS",
+    "Web production build PASS"
+  ]
+}

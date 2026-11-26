@@ -1,0 +1,13 @@
+{
+  "name": "@devmesh/protocol",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/schema.test.mjs && node --experimental-strip-types --test tests/client.test.ts",
+    "build": "tsc --strict --noEmit --skipLibCheck --allowImportingTsExtensions --target es2022 --moduleResolution bundler --module esnext tests/types.ts tests/client.test.ts"
+  },
+  "exports": {
+    "./client": "./ts/client.ts"
+  }
+}

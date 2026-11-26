@@ -1,0 +1,32 @@
+{
+  "verified_at": "2026-11-26T01:38:33.656101+00:00",
+  "scope": "Live preflight",
+  "checks": [
+    {
+      "name": "tcp",
+      "status": "FAIL",
+      "detail": "listen_unavailable"
+    },
+    {
+      "name": "unix",
+      "status": "FAIL",
+      "detail": "listen_unavailable"
+    },
+    {
+      "name": "process",
+      "status": "FAIL",
+      "detail": "process_inspection_unavailable"
+    },
+    {
+      "name": "doctor",
+      "status": "NOT_RUN",
+      "detail": "config_not_provided"
+    }
+  ],
+  "passed": false,
+  "not_covered": [
+    "browser_interaction",
+    "steer_interrupt_approval_resume",
+    "manual_merge_and_final_reconcile"
+  ]
+}

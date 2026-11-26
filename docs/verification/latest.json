@@ -1,0 +1,121 @@
+{
+  "verified_at": "2026-11-26T05:12:13.937898+00:00",
+  "scope": "Local code gates; excludes live Gitea/model/TCP/PostgreSQL/browser acceptance",
+  "results": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--offline",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--workspace",
+        "--offline"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "npm",
+        "test",
+        "--workspaces",
+        "--if-present"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build",
+        "--workspaces",
+        "--if-present"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_deploy.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_remote_deploy.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_local_install.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_setup_local.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_agent_selection.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_live_validation.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_api_contract.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_skill.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_release.py"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "passed": true
+}

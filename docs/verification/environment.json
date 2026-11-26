@@ -1,0 +1,7 @@
+{
+  "checked_at": "2026-11-26T01:23:43.159732+00:00",
+  "tcp_listen": "Operation not permitted",
+  "unix_listen": "Operation not permitted",
+  "process_inspection": "Operation not permitted",
+  "scope": "Actual local probes in current execution sandbox; not a test of deployed DevMesh"
+}

@@ -1,0 +1,1634 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.devmesh.invalid/1.1/ipc.schema.json",
+  "$defs": {
+    "issue_ref": {
+      "type": "object",
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "repository_id": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "issue_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "instance_id",
+        "repository_id",
+        "issue_number"
+      ],
+      "additionalProperties": false
+    },
+    "capabilities": {
+      "type": "object",
+      "properties": {
+        "message_events": {
+          "type": "boolean"
+        },
+        "tool_events": {
+          "type": "boolean"
+        },
+        "steer": {
+          "type": "boolean"
+        },
+        "follow_up": {
+          "type": "boolean"
+        },
+        "prompt": {
+          "type": "boolean"
+        },
+        "interrupt": {
+          "type": "boolean"
+        },
+        "local_approval": {
+          "type": "boolean"
+        },
+        "local_input": {
+          "type": "boolean"
+        },
+        "resume": {
+          "type": "boolean"
+        },
+        "child_sessions": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "message_events",
+        "tool_events",
+        "steer",
+        "follow_up",
+        "prompt",
+        "interrupt",
+        "local_approval",
+        "local_input",
+        "resume",
+        "child_sessions"
+      ],
+      "additionalProperties": false
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 16384
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "details": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "retryable"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "hello"
+        },
+        "ipc_version": {
+          "const": "1.1"
+        },
+        "runtime": {
+          "enum": [
+            "codex",
+            "pi",
+            "pi-durable"
+          ]
+        },
+        "runtime_version": {
+          "type": "string"
+        },
+        "adapter_version": {
+          "type": "string"
+        },
+        "runtime_instance_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "capabilities": {
+          "$ref": "#/$defs/capabilities"
+        },
+        "handshake_token": {
+          "type": "string",
+          "minLength": 16
+        }
+      },
+      "required": [
+        "type",
+        "ipc_version",
+        "runtime",
+        "runtime_version",
+        "adapter_version",
+        "runtime_instance_id",
+        "capabilities"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "probe"
+        },
+        "work_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected_epoch": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "args": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "probe"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "type": "string"
+            },
+            "capabilities": {
+              "$ref": "#/$defs/capabilities"
+            },
+            "health": {
+              "enum": [
+                "ok",
+                "unavailable",
+                "degraded"
+              ]
+            }
+          },
+          "required": [
+            "version",
+            "capabilities",
+            "health"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "start"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "cwd": {
+              "type": "string"
+            },
+            "issue_ref": {
+              "$ref": "#/$defs/issue_ref"
+            },
+            "initial_prompt": {
+              "type": "string",
+              "maxLength": 16384
+            },
+            "runtime_config_ref": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "cwd",
+            "issue_ref",
+            "initial_prompt",
+            "runtime_config_ref"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "start"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "native_session_id": {
+              "type": "string"
+            },
+            "runtime_instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "run_epoch": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            "state": {
+              "enum": [
+                "starting",
+                "running",
+                "idle",
+                "waiting_input",
+                "waiting_approval",
+                "stopping",
+                "ended",
+                "failed",
+                "cancelled"
+              ]
+            }
+          },
+          "required": [
+            "native_session_id",
+            "runtime_instance_id",
+            "run_epoch",
+            "state"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "attach"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "native_session_id": {
+              "type": "string"
+            },
+            "workspace": {
+              "type": "string"
+            },
+            "checkpoint_ref": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "native_session_id",
+            "workspace",
+            "checkpoint_ref"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "attach"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "native_session_id": {
+              "type": "string"
+            },
+            "runtime_instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "run_epoch": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            "state": {
+              "enum": [
+                "starting",
+                "running",
+                "idle",
+                "waiting_input",
+                "waiting_approval",
+                "stopping",
+                "ended",
+                "failed",
+                "cancelled"
+              ]
+            }
+          },
+          "required": [
+            "native_session_id",
+            "runtime_instance_id",
+            "run_epoch",
+            "state"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "resume"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "native_session_id": {
+              "type": "string"
+            },
+            "workspace": {
+              "type": "string"
+            },
+            "checkpoint_ref": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "native_session_id",
+            "workspace",
+            "checkpoint_ref"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "resume"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "native_session_id": {
+              "type": "string"
+            },
+            "runtime_instance_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "run_epoch": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            "state": {
+              "enum": [
+                "starting",
+                "running",
+                "idle",
+                "waiting_input",
+                "waiting_approval",
+                "stopping",
+                "ended",
+                "failed",
+                "cancelled"
+              ]
+            }
+          },
+          "required": [
+            "native_session_id",
+            "runtime_instance_id",
+            "run_epoch",
+            "state"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "status"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "args": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "status"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "starting",
+                "running",
+                "idle",
+                "waiting_input",
+                "waiting_approval",
+                "stopping",
+                "ended",
+                "failed",
+                "cancelled"
+              ]
+            },
+            "run_epoch": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            "native_session_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "quiesced": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "state",
+            "run_epoch",
+            "native_session_id",
+            "quiesced"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "steer"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "command_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "message": {
+              "type": "string",
+              "maxLength": 16384
+            }
+          },
+          "required": [
+            "command_id",
+            "message"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "steer"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "enum": [
+                "queued",
+                "handled",
+                "native_accepted"
+              ]
+            },
+            "native_receipt_ref": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "native_receipt_ref"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "follow_up"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "command_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "message": {
+              "type": "string",
+              "maxLength": 16384
+            }
+          },
+          "required": [
+            "command_id",
+            "message"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "follow_up"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "enum": [
+                "queued",
+                "handled",
+                "native_accepted"
+              ]
+            },
+            "native_receipt_ref": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "native_receipt_ref"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "prompt"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "command_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "message": {
+              "type": "string",
+              "maxLength": 16384
+            }
+          },
+          "required": [
+            "command_id",
+            "message"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "prompt"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "disposition": {
+              "enum": [
+                "queued",
+                "handled",
+                "native_accepted"
+              ]
+            },
+            "native_receipt_ref": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "disposition",
+            "native_receipt_ref"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "interrupt"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "interrupt"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "quiesced": {
+              "type": "boolean"
+            },
+            "outcome": {
+              "enum": [
+                "success",
+                "failed",
+                "cancelled",
+                "unknown"
+              ]
+            }
+          },
+          "required": [
+            "quiesced",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "stop"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,19})$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "stop"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "quiesced": {
+              "type": "boolean"
+            },
+            "outcome": {
+              "enum": [
+                "success",
+                "failed",
+                "cancelled",
+                "unknown"
+              ]
+            }
+          },
+          "required": [
+            "quiesced",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "resolve_approval"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "approval_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "decision": {
+              "enum": [
+                "approve",
+                "deny"
+              ]
+            },
+            "scope": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "approval_id",
+            "decision"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "resolve_approval"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "accepted": {
+              "type": "boolean"
+            },
+            "native_receipt_ref": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "accepted",
+            "native_receipt_ref"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "request"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "reply_input"
+        },
+        "work_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "session_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expected_epoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "input_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 16384
+            }
+          },
+          "required": [
+            "input_id",
+            "text"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "work_id",
+        "session_id",
+        "expected_epoch",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "const": "reply_input"
+        },
+        "ok": {
+          "const": true
+        },
+        "result": {
+          "type": "object",
+          "properties": {
+            "accepted": {
+              "type": "boolean"
+            },
+            "native_receipt_ref": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "accepted",
+            "native_receipt_ref"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "response"
+        },
+        "request_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "method": {
+          "enum": [
+            "probe",
+            "start",
+            "attach",
+            "resume",
+            "status",
+            "steer",
+            "follow_up",
+            "prompt",
+            "interrupt",
+            "stop",
+            "resolve_approval",
+            "reply_input"
+          ]
+        },
+        "ok": {
+          "const": false
+        },
+        "error": {
+          "$ref": "#/$defs/error"
+        }
+      },
+      "required": [
+        "type",
+        "request_id",
+        "method",
+        "ok",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "event"
+        },
+        "runtime_instance_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "native_session_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_epoch": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,19})$"
+        },
+        "event_type": {
+          "type": "string"
+        },
+        "payload": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "type",
+        "runtime_instance_id",
+        "native_session_id",
+        "run_epoch",
+        "event_type",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "exit"
+        },
+        "runtime_instance_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "exit_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "quiesced": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "runtime_instance_id",
+        "exit_code",
+        "reason",
+        "quiesced"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

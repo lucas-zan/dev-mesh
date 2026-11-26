@@ -1,0 +1,14 @@
+{
+  "version": "1.1",
+  "type": "connection.register",
+  "frame_id": "8574eca4-128a-5cec-ae99-a2eef3c33470",
+  "sent_at": "2026-11-25T11:31:00Z",
+  "payload": {
+    "device_id": "484adb25-9d88-5bb1-b1c5-d0000e23b871",
+    "supported_versions": [
+      "1.1"
+    ],
+    "client_version": "1.1.0",
+    "resume_sessions": []
+  }
+}

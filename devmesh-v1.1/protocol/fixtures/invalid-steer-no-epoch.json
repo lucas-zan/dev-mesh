@@ -1,0 +1,21 @@
+{
+  "version": "1.1",
+  "type": "command.dispatch",
+  "frame_id": "d668a6d8-1871-5b6d-af46-0a76d7b8939b",
+  "sent_at": "2026-11-25T11:31:00Z",
+  "payload": {
+    "command_id": "2a91c074-67a1-5f09-9603-b5622aa6a024",
+    "sender_id": "591b386e-da2c-5d19-94f7-9bb1ad398d89",
+    "type": "steer",
+    "target": {
+      "project_id": "c7790278-b47d-5506-8ec7-4859744adaf9",
+      "work_id": "02f279e2-d72d-5c24-9340-dea8f3998532",
+      "session_id": "cb02434e-77f5-57f5-bc1b-5a7cd830e6db",
+      "runtime_instance_id": "cbd9f19e-2c3a-52b3-bdfd-4d64fd26a0da",
+      "claim_generation": 1
+    },
+    "message": "保持 API 兼容性。",
+    "issued_at": "2026-11-25T11:31:00Z",
+    "expires_at": "2026-11-25T11:31:30Z"
+  }
+}

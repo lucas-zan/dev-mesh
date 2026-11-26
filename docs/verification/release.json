@@ -1,0 +1,9 @@
+{
+  "verified_at": "2026-11-26T02:07:14.233048+00:00",
+  "scope": "Manual-install release integrity; excludes actual Docker deployment and online Runtime installation",
+  "bundle": ".cache/release-manual/devmesh-0.1.0-manual-20261126",
+  "archive": ".cache/release-manual/devmesh-0.1.0-manual-20261126.tar.gz",
+  "sha256": "80bb69921628daf88b0b6a943b30c73af60e2bb6e0a9f4d213b1db8282d81abc",
+  "files": 61,
+  "passed": true
+}

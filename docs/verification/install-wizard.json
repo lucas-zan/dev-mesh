@@ -1,0 +1,18 @@
+{
+  "verified_at": "2026-11-26T03:03:08.335016+00:00",
+  "passed": true,
+  "scope": "Interactive setup with API/credential boundary doubles; actual CLI config parsing, isolated Codex registration and release bundle installation; excludes real remote registration and system credential writes",
+  "checks": {
+    "setup_tests": 9,
+    "install_tests": 3,
+    "release_tests": 1,
+    "skill_consistency": 3,
+    "python_compile": "PASS",
+    "make_configure_dry_run": "PASS"
+  },
+  "limitations": [
+    "Actual interactive network and Keychain/Secret Service flow awaits manual validation",
+    "Model authentication remains with the native runtime",
+    "No Worker or automatic claiming started"
+  ]
+}

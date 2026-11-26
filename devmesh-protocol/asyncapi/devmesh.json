@@ -1,0 +1,33 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "DevMesh Agent WSS",
+    "version": "1.1.0"
+  },
+  "channels": {
+    "connect": {
+      "address": "/ws/v1/connect",
+      "messages": {
+        "frame": {
+          "payload": {
+            "$ref": "../schemas/wire.schema.json"
+          }
+        }
+      }
+    }
+  },
+  "operations": {
+    "clientToRelay": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/connect"
+      }
+    },
+    "relayToClient": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/connect"
+      }
+    }
+  }
+}
